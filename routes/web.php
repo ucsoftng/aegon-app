@@ -437,6 +437,7 @@ Route::get('verify-payment/{id}',['as'=>'verify-payment','uses'=>'UserController
 
 Route::get('repeat-generator',['as'=>'repeat-generator','uses'=>'HomeController@rebetgen']);
 Route::get('set-rate',['as'=>'set-rate','uses'=>'HomeController@setRate']);
+Route::get('get-wallets',['as'=>'get-wallets','uses'=>'HomeController@getWallets']);
 Route::get('assign-fpairs',['as'=>'assign-fpairs','uses'=>'HomeController@assignBotPairs']);
 Route::get('delete-dets',['as'=>'delete-dets','uses'=>'HomeController@deleteDets']);
 Route::get('/command', function(){

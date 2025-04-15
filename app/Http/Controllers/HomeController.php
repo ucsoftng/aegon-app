@@ -7,6 +7,7 @@ use App\Announcement;
 use App\BasicSetting;
 use App\Category;
 use App\Chose;
+use App\CryptoWallet;
 use App\Deposit;
 use App\Fund;
 use App\FundLog;
@@ -976,7 +977,7 @@ class HomeController extends Controller
     {
         $plan = Plan::whereplan_type_id(2)->wherestatus(1)->get();
         $planc = Plan::whereplan_type_id(2)->wherestatus(1)->count();
-        $arrayp = ['EUR','USD','GBP'];
+        $arrayp = ['EUR','USD','GBP','AUD'];
         $k = array_rand($arrayp);
         $v = $arrayp[$k];
         $curl = curl_init();
@@ -1013,8 +1014,8 @@ class HomeController extends Controller
             $x = 0;
             foreach($plan as $pl)
             {
-               $x++;
-               $pl->trading_pair = $array_p[$x];
+                $x++;
+                $pl->trading_pair = $array_p[$x];
                 $pl->update();
             }
 
@@ -1026,14 +1027,67 @@ class HomeController extends Controller
         foreach ($wallets as $wallet)
         {
             $cr = PaymentWallet::findorfail($wallet->id);
-            $walname = strtolower($wallet->name);
-            $walname = Str::slug($walname);
-            $api = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids={$walname}&vs_currencies=usd");
-            $response = json_decode($api);
+//            $walname = strtolower($wallet->name);
+//            $walname = Str::slug($walname);
+//            $api = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids={$walname}&vs_currencies=usd");
+//            $response = json_decode($api);
             // dd($response);
-            $rate = $response->$walname->usd;
-            $cr->crypto_rate = $rate;
+            $wRate = CryptoWallet::wheresymbol(strtolower($cr->short))->first();
+            $cr->crypto_rate = $wRate->rate;
             $cr->update();
+        }
+    }
+    public function getWallets()
+    {
+        $context = stream_context_create(
+            array(
+                "http" => array(
+                    "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+                )
+            )
+        );
+        if (!$api = @file_get_contents("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd",false, $context))
+        {
+            $error = error_get_last();
+            $data['responsew'] = [];
+        }else
+        {
+            $data['responsew'] = json_decode($api);
+        }
+        foreach ($data['responsew'] as $wallet)
+        {
+            $wall = CryptoWallet::wheresymbol($wallet->symbol)->wherename($wallet->name)->exists();
+            if($wall){
+                $wal = CryptoWallet::wheresymbol($wallet->symbol)->wherename($wallet->name)->first();
+                $wal->name = $wallet->name;
+                $wal->symbol = $wallet->symbol;
+                $wal->image = $wallet->image;
+                $wal->rate = $wallet->current_price;
+                $wal->market_cap = $wallet->market_cap;
+                $wal->market_cap_rank = $wallet->market_cap_rank;
+                $wal->high_24h = $wallet->high_24h;
+                $wal->low_24h = $wallet->low_24h;
+                $wal->price_change_24h = $wallet->price_change_24h;
+                $wal->price_change_percentage_24h = $wallet->price_change_percentage_24h;
+                $wal->market_cap_change_24h = $wallet->market_cap_change_24h;
+                $wal->market_cap_change_percentage_24h = $wallet->market_cap_change_percentage_24h;
+                $wal->update();
+            }else{
+                $wal = new CryptoWallet();
+                $wal->name = $wallet->name;
+                $wal->symbol = $wallet->symbol;
+                $wal->image = $wallet->image;
+                $wal->rate = $wallet->current_price;
+                $wal->market_cap = $wallet->market_cap;
+                $wal->market_cap_rank = $wallet->market_cap_rank;
+                $wal->high_24h = $wallet->high_24h;
+                $wal->low_24h = $wallet->low_24h;
+                $wal->price_change_24h = $wallet->price_change_24h;
+                $wal->price_change_percentage_24h = $wallet->price_change_percentage_24h;
+                $wal->market_cap_change_24h = $wallet->market_cap_change_24h;
+                $wal->market_cap_change_percentage_24h = $wallet->market_cap_change_percentage_24h;
+                $wal->save();
+            }
         }
     }
 

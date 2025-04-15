@@ -61,7 +61,6 @@ class RegisterController extends Controller
     }
     public function showRegistrationForm()
     {
-
         $general = GeneralSetting::first();
         $bas = BasicSetting::first();
         $data['basic'] = $bas;
@@ -83,7 +82,6 @@ class RegisterController extends Controller
         else{
             return redirect()->route('login');
         }
-
     }
     public function register(Request $request)
     {

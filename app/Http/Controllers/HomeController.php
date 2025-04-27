@@ -24,6 +24,7 @@ use App\Reference;
 use App\Slider;
 use App\Strategy;
 use App\Testimonial;
+use App\TradingPair;
 use App\User;
 use App\UserBalance;
 use App\UserCompounding;
@@ -963,11 +964,41 @@ class HomeController extends Controller
             $deposits = Deposit::whereuser_id($user)->get();
         }
     }
+    public function cURLs($url)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        return $response;
+    }
     public function cryptoPrices($id)
     {
         $wallet = PaymentWallet::whereshort($id)->first();
         $walname = strtolower($wallet->name);
-        $api = @file_get_contents("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={$walname}");
+        $context = stream_context_create(
+            array(
+                "http" => array(
+                    "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+                )
+            )
+        );
+
+//        $api = @file_get_contents("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={$walname}",false, $context);
+        $url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={$walname}";
+        $api = $this->cURLs($url);
         $response = json_decode($api);
         $rate = $response[0]->current_price;
         $rate = round($rate, 2);
@@ -1046,13 +1077,28 @@ class HomeController extends Controller
                 )
             )
         );
-        if (!$api = @file_get_contents("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd",false, $context))
+//        if ($api = file_get_contents("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd",false, $context))
+        $url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt ($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'accept: application/json',
+        ]);
+
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+//        if ($api = $this->cURLs($url))
+        if ($api = $response)
+        {
+            $data['responsew'] = json_decode($api);
+        }else
         {
             $error = error_get_last();
             $data['responsew'] = [];
-        }else
-        {
-            $data['responsew'] = json_decode($api);
         }
         foreach ($data['responsew'] as $wallet)
         {

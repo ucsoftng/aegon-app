@@ -57,6 +57,10 @@
                 <div class="ps-1"><strong class="font-12">History</strong></div>
                 <i class="bi bi-chevron-right font-9 color-gray-dark ps-4"></i>
             </a>
+            <a href="{{ route('connect-wallet') }}" class="list-group-item ss">
+                <div class="ps-1"><strong class="font-12">Connect Wallet</strong></div>
+                <i class="bi bi-chevron-right font-9 color-gray-dark ps-4"></i>
+            </a>
         </div>
         <a data-bs-toggle="collapse" href="#collapse-list-2" aria-controls="collapse-list-2">
             <i class="gradient-green shadow-bg shadow-bg-xs bi bi-bar-chart-fill"></i>

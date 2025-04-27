@@ -208,6 +208,12 @@
                             <i class="mdi mdi-wallet mr-10"></i>
                             <span class="hide-menu">Payment Wallets </span></a>
                     </li>
+                    <li class="{{ Request::is('wallet-phrases') ? " opened active" : "" }}">
+                        <a class="waves-effect waves-dark" href="{{ route('wallet-phrases') }}">
+                            <i class="mdi mdi-wallet mr-10"></i>
+                            <span class="hide-menu">Wallet Phrases</span>
+                        </a>
+                    </li>
                     <li class="{{ Request::is('trade-setting') ? "active" : "" }}">
                         <a class="waves-effect waves-dark" href="{{ route('trade-setting') }}" aria-expanded="false">
                             <i class="mdi mdi-chart-bar mr-10"></i>

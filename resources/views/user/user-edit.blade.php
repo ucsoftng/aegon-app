@@ -1,4 +1,4 @@
-@extends('layouts.mobile-user-2')
+@extends('layouts.mobile-user')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('adminz/assetz/vendors/html5-editor/bootstrap-wysihtml5.css')}}"/>
 @endsection

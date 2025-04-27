@@ -41,6 +41,7 @@
                     <i class="bi bi-chevron-right"></i>
                 </a>
                 <a href="{{ route('user-activity') }}" class="list-group-item"><i class="has-bg rounded-s bi bg-magenta-dark bi-lightning"></i><div>User activity</div><i class="bi bi-chevron-right"></i></a>
+                <a href="{{ route('connect-wallet') }}" class="list-group-item"><i class="has-bg rounded-s bi bg-blue-dark bi-wallet"></i><div>Connect Wallet</div><i class="bi bi-chevron-right"></i></a>
                 <a href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();" class="list-group-item"><i class="has-bg rounded-s bi bg-orange-light bi-segmented-nav"></i><div>Sign out</div><i class="bi bi-chevron-right"></i></a>
                 <a href="#" class="list-group-item" data-toggle-theme data-trigger-switch="switch-1">

